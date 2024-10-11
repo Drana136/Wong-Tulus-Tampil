@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire-Themed Health Tracker</title>
+    <style>
+    
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e44, #ffb94e);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        header h1 {
+            margin-left: 20px;
+            font-size: 2em;
+        }
+        header img {
+            width: 60px;
+            height: auto;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #ff6b6b;
+            text-align: center;
+        }
+        form {
+            margin: 20px 0;
+        }
+        form label {
+            font-size: 1em;
+            margin-bottom: 5px;
+            display: block;
+        }
+        form input, form select, form button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        form input, form select {
+            border: 1px solid #ccc;
+        }
+        form button {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e44, #ffb94e);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        form button:hover {
+            background: linear-gradient(90deg, #ff8e44, #ffb94e, #ff6b6b);
+        }
+        .progress-section {
+            margin: 20px 0;
+        }
+        .progress-section h3 {
+            text-align: center;
+            color: #ff6b6b;
+        }
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            background-color: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+            height: 25px;
+        }
+        .progress div {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e44, #ffb94e);
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f1f1f1;
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="track health.png">
+        <h1>Health Tracker</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Track Calories</a></li>
+            <li><a href="#">Track Activity</a></li>
+            <li><a href="#">Progress</a></li>
+        </ul>
+    </nav>
+
+    <section>
+
+        <h2>Log Your Meals & Calories</h2>
+        <form id="calorie-form">
+            <label for="meal">Meal:</label>
+            <input type="text" id="meal" name="meal" placeholder="e.g., Breakfast, Lunch">
+
+            <label for="food-item">Food Item:</label>
+            <input type="text" id="food-item" name="food-item" placeholder="e.g., Rice, Chicken">
+
+            <label for="calories">Calories:</label>
+            <input type="number" id="calories" name="calories" placeholder="e.g., 500">
+
+            <button type="submit">Add Meal</button>
+        </form>
+
+        <h2>Log Your Physical Activity</h2>
+        <form id="activity-form">
+            <label for="activity">Activity:</label>
+            <input type="text" id="activity" name="activity" placeholder="e.g., Running, Cycling">
+
+            <label for="duration">Duration (minutes):</label>
+            <input type="number" id="duration" name="duration" placeholder="e.g., 30">
+
+            <label for="intensity">Intensity:</label>
+            <select id="intensity" name="intensity">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+
+            <button type="submit">Log Activity</button>
+        </form>
+
+        <div class="progress-section">
+            <h3>Your Progress Today</h3>
+            <p>Total Calories Consumed: <span id="total-calories">0</span> kcal</p>
+            <p>Total Calories Burned: <span id="total-burned">0</span> kcal</p>
+            <p>Calorie Balance: <span id="calorie-balance">0</span> kcal</p>
+            <div class="progress">
+                <div id="calorie-progress" style="width: 50%;"></div>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>Health Tracker. Stay Healthy, Stay Fit.</p>
+    </footer>
+
+    <script>
+        let totalCalories = 0;
+        let totalBurned = 0;
+
+        document.getElementById('calorie-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const calories = parseInt(document.getElementById('calories').value);
+            totalCalories += calories;
+            updateProgress();
+        });
+
+        document.getElementById('activity-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const duration = parseInt(document.getElementById('duration').value);
+            const intensity = document.getElementById('intensity').value;
+
+            let burned = duration * (intensity === 'low' ? 5 : intensity === 'medium' ? 8 : 12);
+            totalBurned += burned;
+            updateProgress();
+        });
+
+        function updateProgress() {
+            document.getElementById('total-calories').innerText = totalCalories;
+            document.getElementById('total-burned').innerText = totalBurned;
+            document.getElementById('calorie-balance').innerText = totalCalories - totalBurned;
+
+            let balancePercentage = (totalBurned / (totalCalories + 1)) * 100; 
+            document.getElementById('calorie-progress').style.width = `${balancePercentage}%`;
+        }
+    </script>
+
+</body>
+</html>
